@@ -55,4 +55,12 @@ module.exports = (app) => {
       return res.redirect("/")
     })
   })
+
+  // SEARCH PET
+  app.get("/search", async (req, res) => {
+    const term = new RegExp(req.query.term, "i")
+    const pets = await Pet.find({ $or: [{ name: term }, { species: term }] }).exec()
+
+    res.render("pets-index", { pets })
+  })
 }
