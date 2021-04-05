@@ -58,9 +58,20 @@ module.exports = (app) => {
 
   // SEARCH PET
   app.get("/search", async (req, res) => {
-    const term = new RegExp(req.query.term, "i")
-    const pets = await Pet.find({ $or: [{ name: term }, { species: term }] }).exec()
+    const searchedText = req.query.term
+    const term = new RegExp(searchedText, "i")
+    const page = req.query.page || 1
 
-    res.render("pets-index", { pets })
+    const { docs, pages } = await Pet.paginate(
+      { $or: [{ name: term }, { species: term }] },
+      { page }
+    )
+
+    res.render("pets-index", {
+      pets: docs,
+      pagesCount: pages,
+      currentPage: page,
+      term: searchedText,
+    })
   })
 }
