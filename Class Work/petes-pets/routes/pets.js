@@ -17,16 +17,19 @@ module.exports = (app) => {
     pet
       .save()
       .then((pet) => {
-        res.redirect(`/pets/${pet._id}`)
+        // res.redirect(`/pets/${pet._id}`)
+        return res.send({ pet })
       })
       .catch((err) => {
-        // Handle Errors
+        res.status(400).send(err.errors)
       })
   })
 
   // SHOW PET
   app.get("/pets/:id", (req, res) => {
     Pet.findById(req.params.id).exec((err, pet) => {
+      console.log(req.params.id)
+      console.log(pet)
       res.render("pets-show", { pet: pet })
     })
   })
