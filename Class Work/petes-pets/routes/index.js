@@ -6,6 +6,11 @@ module.exports = (app) => {
     const page = req.query.page || 1
 
     const { docs, pages } = await Pet.paginate({}, { page })
-    res.render("pets-index", { pets: docs, pagesCount: pages, currentPage: page })
+
+    if (req.header("Content-Type") == "application/json") {
+      res.json({ pets: docs, pagesCount: pages, currentPage: page })
+    } else {
+      res.render("pets-index", { pets: docs, pagesCount: pages, currentPage: page })
+    }
   })
 }
