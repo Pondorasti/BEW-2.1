@@ -1,0 +1,28 @@
+service: serverlessAPI
+
+configValidationMode: error
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+functions:
+  app:
+    handler: index.handler
+    events:
+      - http: GET /
+      - http: "GET /{proxy+}"
+  # getUser:
+  #   handler: index.handler
+  #   events:
+  #     - http: "GET /users/{proxy+}"
+  # createUser:
+  #   handler: index.handler
+  #   events:
+  #     - http: "POST /users"
