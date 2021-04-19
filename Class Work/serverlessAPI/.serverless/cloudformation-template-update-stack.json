@@ -133,6 +133,25 @@
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/serverlessAPI-dev*:*:*"
                     }
                   ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Query",
+                    "dynamodb:Scan",
+                    "dynamodb:GetItem",
+                    "dynamodb:PutItem",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:DeleteItem"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "UsersDynamoDBTable",
+                        "Arn"
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -161,13 +180,18 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/serverlessAPI/dev/1618446530495-2021-04-15T00:28:50.495Z/serverlessAPI.zip"
+          "S3Key": "serverless/serverlessAPI/dev/1618867864269-2021-04-19T21:31:04.269Z/serverlessAPI.zip"
         },
         "Handler": "index.handler",
         "Runtime": "nodejs12.x",
         "FunctionName": "serverlessAPI-dev-app",
         "MemorySize": 1024,
         "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "USERS_TABLE": "users-table-dev"
+          }
+        },
         "Role": {
           "Fn::GetAtt": [
             "IamRoleLambdaExecution",
@@ -179,14 +203,14 @@
         "AppLogGroup"
       ]
     },
-    "AppLambdaVersionIfeYSHujBbAJZqSw2wuUKifomJbkYAl9AAyoOO3L10": {
+    "AppLambdaVersionf9Ecksq77CArVBWdVfAB3XstPLto6PV2mcj1orrNM": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "AppLambdaFunction"
         },
-        "CodeSha256": "dse3s7QjcnNYpe8W1RUOenb7r5Xl8hGxT52epNEDMzg="
+        "CodeSha256": "pkpSrTNGRGWyfUW2kgcXJGRIEg7WCpq6SyCahjjNRzg="
       }
     },
     "ApiGatewayRestApi": {
@@ -216,10 +240,10 @@
         }
       }
     },
-    "ApiGatewayMethodAny": {
+    "ApiGatewayMethodGet": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "HttpMethod": "ANY",
+        "HttpMethod": "GET",
         "RequestParameters": {},
         "ResourceId": {
           "Fn::GetAtt": [
@@ -262,10 +286,10 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayMethodProxyVarAny": {
+    "ApiGatewayMethodProxyVarGet": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "HttpMethod": "ANY",
+        "HttpMethod": "GET",
         "RequestParameters": {},
         "ResourceId": {
           "Ref": "ApiGatewayResourceProxyVar"
@@ -305,7 +329,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1618446527626": {
+    "ApiGatewayDeployment1618867851900": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -314,8 +338,8 @@
         "StageName": "dev"
       },
       "DependsOn": [
-        "ApiGatewayMethodAny",
-        "ApiGatewayMethodProxyVarAny"
+        "ApiGatewayMethodGet",
+        "ApiGatewayMethodProxyVarGet"
       ]
     },
     "AppLambdaPermissionApiGateway": {
@@ -354,6 +378,28 @@
           ]
         }
       }
+    },
+    "UsersDynamoDBTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "userId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "TableName": "users-table-dev"
+      }
     }
   },
   "Outputs": {
@@ -365,7 +411,7 @@
     "AppLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "AppLambdaVersionIfeYSHujBbAJZqSw2wuUKifomJbkYAl9AAyoOO3L10"
+        "Ref": "AppLambdaVersionf9Ecksq77CArVBWdVfAB3XstPLto6PV2mcj1orrNM"
       }
     },
     "ServiceEndpoint": {
