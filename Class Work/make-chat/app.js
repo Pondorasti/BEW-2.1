@@ -1,9 +1,12 @@
+// Server Setup
 const express = require("express")
 const app = express()
 const server = require("http").Server(app)
 
+// SocketIO
 const io = require("socket.io")(server)
 io.on("connection", (socket) => {
+  require("./sockets/chat")(io, socket)
   console.log("🔌 New user connected!")
 })
 
@@ -12,6 +15,7 @@ const exphbs = require("express-handlebars")
 app.engine("handlebars", exphbs())
 app.set("view engine", "handlebars")
 
+// Static/Public Files
 app.use("/public", express.static("public"))
 
 // Routes
