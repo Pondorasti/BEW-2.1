@@ -24,7 +24,7 @@ $(document).ready(() => {
   })
 
   // Send Messages
-  $("#send-chat-btn").click((event) => {
+  $("#send-chat-btn").click(() => {
     const message = $("#chat-input").val()
     if (message.length > 0) {
       socket.emit("new message", { sender: currentUsername, message })
@@ -40,5 +40,15 @@ $(document).ready(() => {
         <p class="message-text">${message}</p>
       </div>
     `)
+  })
+
+  // Create channel
+  $("#new-channel-btn").click(() => {
+    const newChannel = $("#new-channel-input").val()
+
+    if (newChannel.length > 0) {
+      socket.emit("new channel", newChannel)
+      $("#new-channel-input").val("")
+    }
   })
 })

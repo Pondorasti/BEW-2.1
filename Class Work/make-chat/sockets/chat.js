@@ -20,10 +20,15 @@ module.exports = (io, socket, onlineUsers) => {
     io.emit("get online users", onlineUsers)
   })
 
-  // On Disconnect
+  // Disconnect
   socket.on("disconnect", () => {
     const disconnectedUsername = socket.username
     delete onlineUsers[disconnectedUsername]
     io.emit("get online users", onlineUsers)
+  })
+
+  // New Channel
+  socket.on("new channel", (newChannel) => {
+    console.log(newChannel)
   })
 }
