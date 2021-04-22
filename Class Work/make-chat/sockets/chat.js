@@ -10,9 +10,11 @@ module.exports = (io, socket, onlineUsers, channels) => {
   })
 
   // New Message
-  socket.on("new message", ({ sender, message }) => {
-    console.log(`${sender}: ${message}`)
-    io.emit("new message", { sender, message })
+  socket.on("new message", ({ sender, message, channel }) => {
+    console.log(channel)
+    console.log(channels[channel])
+    channels[channel].push({ sender, message })
+    io.to(channel).emit("new message", { sender, message })
   })
 
   // Get online users

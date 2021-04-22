@@ -16,7 +16,6 @@ $(document).ready(() => {
   })
 
   socket.on("get online users", (onlineUsers) => {
-    console.log(onlineUsers)
     $(".users-online").empty()
     for (username in onlineUsers) {
       $(".users-online").append(`<div class="user-online">${username}</div>`)
@@ -25,9 +24,11 @@ $(document).ready(() => {
 
   // Send Messages
   $("#send-chat-btn").click(() => {
+    const channel = $(".channel-current").text()
+    console.log(`Channel: ${channel}`)
     const message = $("#chat-input").val()
     if (message.length > 0) {
-      socket.emit("new message", { sender: currentUsername, message })
+      socket.emit("new message", { sender: currentUsername, message, channel })
     }
 
     $("#chat-input").val("")
