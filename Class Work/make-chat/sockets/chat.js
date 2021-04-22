@@ -1,4 +1,4 @@
-module.exports = (io, socket, onlineUsers) => {
+module.exports = (io, socket, onlineUsers, channels) => {
   // New User
   socket.on("new user", (username) => {
     console.log(`${username} has joined the chat!`)
@@ -29,6 +29,11 @@ module.exports = (io, socket, onlineUsers) => {
 
   // New Channel
   socket.on("new channel", (newChannel) => {
-    console.log(newChannel)
+    channels[newChannel] = []
+    socket.join(newChannel)
+
+    io.emit("new channel", newChannel)
+
+    socket.emit("user changed channel", { channel: newChannel, messages: channels[newChannel] })
   })
 }

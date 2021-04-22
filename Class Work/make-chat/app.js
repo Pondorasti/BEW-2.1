@@ -5,9 +5,10 @@ const server = require("http").Server(app)
 
 // SocketIO
 let onlineUsers = {}
+let channels = { General: [] }
 const io = require("socket.io")(server)
 io.on("connection", (socket) => {
-  require("./sockets/chat")(io, socket, onlineUsers)
+  require("./sockets/chat")(io, socket, onlineUsers, channels)
   console.log("🔌 New user connected!")
 })
 

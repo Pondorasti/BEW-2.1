@@ -42,7 +42,7 @@ $(document).ready(() => {
     `)
   })
 
-  // Create channel
+  // Create Channel
   $("#new-channel-btn").click(() => {
     const newChannel = $("#new-channel-input").val()
 
@@ -50,5 +50,31 @@ $(document).ready(() => {
       socket.emit("new channel", newChannel)
       $("#new-channel-input").val("")
     }
+  })
+
+  socket.on("new channel", (newChannel) => {
+    $(".channels").append(`<div class="channel">${newChannel}</div>`)
+  })
+
+  // Change channel
+  socket.on("user changed channel", ({ channel, messages }) => {
+    // Remove Current Channel
+    $(".channel-current").addClass("channel")
+    $(".channel-current").removeClass("channel-current")
+
+    // Update new Current Channel
+    $(`.channel:contains('${channel}')`).addClass("channel-current")
+    $(".channel-current").removeClass("channel")
+
+    // Refresh Messages
+    $(".message-container").empty()
+    messages.forEach((message) => {
+      $(".message-container").append(`
+          <div class="message">
+            <p class="message-user">${sender}: </p>
+            <p class="message-text">${message}</p>
+          </div>
+        `)
+    })
   })
 })
