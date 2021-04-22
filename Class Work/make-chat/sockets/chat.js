@@ -38,4 +38,10 @@ module.exports = (io, socket, onlineUsers, channels) => {
 
     socket.emit("user changed channel", { channel: newChannel, messages: channels[newChannel] })
   })
+
+  // Change Channel
+  socket.on("user chsnged channel", (channel) => {
+    socket.join(channel)
+    socket.emit("user changed channel", { channel, message: channels[channel] })
+  })
 }

@@ -10,6 +10,7 @@ $(document).ready(() => {
       currentUsername = username
       socket.emit("new user", username)
       socket.emit("get online users")
+      socket.emit("user changed channel", "General")
       $(".username-form").remove()
       $(".main-container").css("display", "flex")
     }
@@ -58,6 +59,11 @@ $(document).ready(() => {
   })
 
   // Change channel
+  $(document).on("click", "channel", (event) => {
+    const newChannel = event.target.textContent
+    socket.emit("user changed channel", newChannel)
+  })
+
   socket.on("user changed channel", ({ channel, messages }) => {
     // Remove Current Channel
     $(".channel-current").addClass("channel")
