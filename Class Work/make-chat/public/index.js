@@ -10,6 +10,7 @@ $(document).ready(() => {
       currentUsername = username
       socket.emit("new user", username)
       socket.emit("get online users")
+      socket.emit("get channels")
       socket.emit("user changed channel", "General")
       $(".username-form").remove()
       $(".main-container").css("display", "flex")
@@ -26,7 +27,6 @@ $(document).ready(() => {
   // Send Messages
   $("#send-chat-btn").click(() => {
     const channel = $(".channel-current").text()
-    console.log(`Channel: ${channel}`)
     const message = $("#chat-input").val()
     if (message.length > 0) {
       socket.emit("new message", { sender: currentUsername, message, channel })
@@ -35,7 +35,9 @@ $(document).ready(() => {
     $("#chat-input").val("")
   })
 
-  socket.on("new message", ({ sender, message }) => {
+  // New Message
+  socket.on("new message", ({ sender, message, channel }) => {
+    const currentChannel = $(".channel-current").text()
     $(".message-container").append(`
       <div class="message">
         <p class="message-user">${sender}: </p>
@@ -58,8 +60,17 @@ $(document).ready(() => {
     $(".channels").append(`<div class="channel">${newChannel}</div>`)
   })
 
-  // Change channel
-  $(document).on("click", "channel", (event) => {
+  // Get Channels
+  socket.on("get channels", (channels) => {
+    $(".channel").remove(".channel")
+    $(".channel-current").remove(".channel-current")
+    channels.forEach((channel) => {
+      $(".channels").append(`<div class="channel">${channel}</div>`)
+    })
+  })
+
+  // Change Channel
+  $(document).on("click", ".channel", (event) => {
     const newChannel = event.target.textContent
     socket.emit("user changed channel", newChannel)
   })
@@ -75,7 +86,7 @@ $(document).ready(() => {
 
     // Refresh Messages
     $(".message-container").empty()
-    messages.forEach((message) => {
+    messages.forEach(({ message, sender }) => {
       $(".message-container").append(`
           <div class="message">
             <p class="message-user">${sender}: </p>
