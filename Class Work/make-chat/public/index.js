@@ -9,14 +9,18 @@ $(document).ready(() => {
     if (username.length > 0) {
       currentUsername = username
       socket.emit("new user", username)
+      socket.emit("get online users")
       $(".username-form").remove()
       $(".main-container").css("display", "flex")
     }
   })
 
-  socket.on("new user", (username) => {
-    console.log(`${username} has joined the chat!`)
-    $(".users-online").append(`<div class="user-online">${username}</div>`)
+  socket.on("get online users", (onlineUsers) => {
+    console.log(onlineUsers)
+    $(".users-online").empty()
+    for (username in onlineUsers) {
+      $(".users-online").append(`<div class="user-online">${username}</div>`)
+    }
   })
 
   // Send Messages

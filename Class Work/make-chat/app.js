@@ -4,9 +4,10 @@ const app = express()
 const server = require("http").Server(app)
 
 // SocketIO
+let onlineUsers = {}
 const io = require("socket.io")(server)
 io.on("connection", (socket) => {
-  require("./sockets/chat")(io, socket)
+  require("./sockets/chat")(io, socket, onlineUsers)
   console.log("🔌 New user connected!")
 })
 
