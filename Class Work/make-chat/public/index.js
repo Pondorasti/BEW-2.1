@@ -38,7 +38,8 @@ $(document).ready(() => {
   // New Message
   socket.on("new message", ({ sender, message, channel }) => {
     const currentChannel = $(".channel-current").text()
-    $(".message-container").append(`
+    if (currentChannel)
+      $(".message-container").append(`
       <div class="message">
         <p class="message-user">${sender}: </p>
         <p class="message-text">${message}</p>

@@ -12,7 +12,7 @@ module.exports = (io, socket, onlineUsers, channels) => {
   // New Message
   socket.on("new message", ({ sender, message, channel }) => {
     channels[channel].push({ sender, message })
-    io.to(channel).emit("new message", { sender, message })
+    io.to(channel).emit("new message", { sender, message, channel })
   })
 
   // Get online users
