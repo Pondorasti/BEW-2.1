@@ -4,7 +4,7 @@ const httpServer = require("http")
 const server = httpServer.createServer(app)
 
 app.get("/", (req, res) => {
-  res.send("<h1>Hello</h1>")
+  res.sendFile(__dirname + "/public/index.html")
 })
 
 server.listen(3000, () => {
