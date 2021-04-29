@@ -11,6 +11,9 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("a user connected")
+  socket.on("chat message", (message) => {
+    io.emit("chat message", message)
+  })
 })
 
 server.listen(3000, () => {
