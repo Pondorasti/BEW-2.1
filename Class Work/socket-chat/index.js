@@ -13,7 +13,7 @@ io.on("connection", (socket) => {
   io.emit("chat message", "New user joined the chat! Say 👋")
 
   socket.on("chat message", (message) => {
-    io.emit("chat message", message)
+    socket.broadcast.emit("chat message", message)
   })
 })
 
